@@ -15,6 +15,8 @@
             class="w-full rounded-lg border placeholder:text-right  leading-10 ring-0 text-[14px] pr-2 placeholder:text-[14px] outline-0 px-2"
             dir="auto"
             v-on="handlers"
+
+
         />
         <DynamicIcon v-if="iconName" :icon="iconName" class="ml-2"></DynamicIcon>
       </div>
@@ -91,11 +93,9 @@ let props = defineProps({
 })
 
 const modelValue = defineModel()
-const useFieldOptions = (toRef(props, 'vname'))
-const useFieldOptions2 = (toRef(props, 'vname'), modelValue.value)
-
-const {value, meta, handleChange, handleBlur} = useField(props.hasDefault ? useFieldOptions2 : useFieldOptions);
-
+const {value, meta, handleChange, handleBlur} = useField(toRef(props, 'vname'), null, {
+  initialValue: modelValue.value
+});
 watch(() => modelValue.value, (newVal) => {
   if (props.dataType === 'tel' || props.inputMode === 'numeric') {
     value.value = useUtils().convertNumbers2English(newVal);
@@ -113,7 +113,6 @@ const handlers = computed(() => {
   };
   // Get list of validation events based on the current mode
   const triggers = modes[props.mode]({
-
     meta,
   });
   // add them to the "on" handlers object
